@@ -5,40 +5,102 @@
 
 function webservicesphp_menu() {
 
-	$items['webservicesphp/imagen'] = array(
-	'title' => 'Imagenes',
-		'page callback' => 'webservicesphp_printimage',
+	$items['webservicesphp/nodo1'] = array(
+	'title' => 'Primer Nodo',
+		'page callback' => 'webservicesphp_printnode',
 		'access callback' => TRUE,
 	);
 
-	$items['webservicesphp/recientes'] = array(
-	'title' => 'Posts Recientes',
-		'page callback' => 'webservicesphp_recent',
+	$items['webservicesphp/lista'] = array(
+	'title' => 'Directorio',
+		'page callback' => 'webservicesphp_list',
+		'access callback' => TRUE,
+	);
+
+	$items['webservicesphp/contenido'] = array(
+	'title' => 'Contenido',
+		'page callback' => 'webservicesphp_vistaContenidos',
 		'access callback' => TRUE,
 	);
 
 	return $items;
 }
 
-function webservicesphp_printimage() {
+function webservicesphp_printnode() {
 	$nid = 1;
 	$node = node_load($nid);
 	print drupal_render(node_view(node_load($nid)));
 }
 
-function webservicesphp_recent() {
-	$today = getdate(); //Obtener fecha actual
-	//Calcula la fecha siete dias antes
-	$start_time = mktime(0, 0, 0, $today['mon'],($today['mday']-7), $today['year']);
-	//Obtener todos los posts desde 7 dias antes hasta hoy
-	$end_time = time();
+/**function webservicesphp_recent() {
+ *	$today = getdate(); //Obtener fecha actual
+ *	//Calcula la fecha siete dias antes
+ *	$start_time = mktime(0, 0, 0, $today['mon'],($today['mday']-7), $today['year']);
+ *	//Obtener todos los posts desde 7 dias antes hasta hoy
+ *	$end_time = time();
+ *
+ *	$query = db_select('node', 'n')
+ *		->fields('n', array('nid','title','created'))
+ *		->condition('status', 1) //publicados
+ *		->condition('created', array($start_time, $end_time), 'BETWEEN')
+ *		->orderBy('created', 'DESC') //Mas reciente primero
+ *		->execute();
+ *	//$stuff = $query->fetchAll();
+ *	return $query;
+ *} 
+ */
 
+function webservicesphp_list() {
 	$query = db_select('node', 'n')
-		->fields('n', array('nid','title','created'))
+		->fields('n', array('title','created'))
 		->condition('status', 1) //publicados
-		->condition('created', array($start_time, $end_time), 'BETWEEN')
-		->orderBy('created', 'DESC') //Mas reciente primero
-		->execute();
-	//$stuff = $query->fetchAll();
-	return $query;
+		->orderBy('created', 'DESC'); //Mas reciente primero
+	$result = $query->execute();
+	echo '<h2> Directorio de publicaciones </h2>';
+	echo '<div class="Table">';
+	while($registro = $result->fetchAssoc()) {
+		echo '<div class="Row">'; //fila
+		echo '<p>';
+		print_r($registro['title']);
+		echo '&nbsp';
+		print_r(format_date($registro['created'],'custom','j M Y'));
+		echo '</p>';
+		echo '</div>'; //fila
+	}
+	echo '</div>';
 }
+
+
+function webservicesphp_vistaContenidos() {
+	$query = db_select('node', 'n');
+	$query->join('field_data_body', 'f', 'n.nid=f.entity_id');
+	$query->join('file_managed', 'm', 'n.nid=m.fid');
+	$query->fields('n', array('nid','title','created'))
+		->fields('f', array('body_value'))
+		->fields('m', array('filename'))
+		->condition('n.status', 1) //publicados
+		->orderBy('n.created', 'ASC')
+		->addTag('node_access'); 
+
+	$result = $query->execute();
+	echo '<h2> Directorio de publicaciones </h2>';
+	echo '<div class="Table">';
+	while($registro = $result->fetchAssoc()) {
+		echo '<div class="Row">'; //fila
+		echo '<p>';
+		print_r(format_date($registro['created'],'custom','j M Y'));
+		echo '<br>';
+		print_r($registro['title']);
+		echo '<br>';
+		print_r($registro['body_value']);
+		echo '<br>';
+		$imagepath = "/var/www/drupalsite/sites/default/files/styles/large/public/field/image/".$registro['filename'];
+		$picstring = base64_encode(file_get_contents($imagepath));
+		$src = 'data: '.mime_content_type($imagepath).';base64,'.$picstring;
+		echo '<img src="',$src,'">';
+		echo '</p>';
+		echo '</div>'; //fila
+	}
+	echo '</div>';
+}
+
