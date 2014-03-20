@@ -78,4 +78,5 @@ public $test = array(
 
 
 Ahora que ya tenemos configurado probamos localhost y vemos que ya tenemos lista nuestra instalación de CakePHP ahora hay que proceder a programar.
+
  
