@@ -1,0 +1,7 @@
+<IfModule mod_geoip.c>
+  	GeoIPEnable On
+  	GeoIPDBFile /usr/share/GeoIP/GeoIP.dat
+  	GeoIPDBFile /usr/share/GeoIP/GeoIP.dat MemoryCache
+  	GeoIPDBFile /usr/share/GeoIP/GeoIP.dat CheckCache
+ 	 GeoIPScanProxyHeaders On
+</IfModule>
