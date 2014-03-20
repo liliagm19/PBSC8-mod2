@@ -4,3 +4,4 @@ SetEnvIf GEOIP_COUNTRY_CODE MX AllowCountry
 
 Deny from all
 Allow from env=AllowCountry
+
