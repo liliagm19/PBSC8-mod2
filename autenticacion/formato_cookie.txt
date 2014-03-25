@@ -1,0 +1,14 @@
+La cookie consiste de 3 partes
+
+La primera parte es el md5 del usuario
+La segunda parte es el md5 de la contraseña
+La tercera parte es un 0 si el usuario es usuario normal o 1 si el usuario es admin.
+
+La idea de haberlo elegido así es que dado que los md5 de una cadena en teoría son únicos entonces
+la unión de ambos debe ser también única, así garantizamos una correspondencia biunívoca en
+la función cookie <-> user,pass.
+
+Ejemplo hipotético de cookie.
+2r23r23rrewrdwqed21342  44e2rerfqwde12ewer2r2ef2     1
+     parte 1                parte 2               id_user
+
