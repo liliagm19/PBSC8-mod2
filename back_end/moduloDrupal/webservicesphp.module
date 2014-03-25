@@ -4,21 +4,9 @@
  */
 function webservicesphp_menu() {
 
-	$items['webservicesphp/nodo1'] = array(
-	'title' => 'Primer Nodo',
-		'page callback' => 'webservicesphp_printnode',
-		'access callback' => TRUE,
-	);
-
 	$items['webservicesphp/lista'] = array(
 	'title' => 'Directorio',
 		'page callback' => 'webservicesphp_list',
-		'access callback' => TRUE,
-	);
-
-	$items['webservicesphp/contenido'] = array(
-	'title' => 'Contenido',
-		'page callback' => 'webservicesphp_vistaContenidos',
 		'access callback' => TRUE,
 	);
 
@@ -28,22 +16,21 @@ function webservicesphp_menu() {
 		'access callback' => TRUE,
 	);
 
-	$items['webservicesphp/comentario'] = array(
-	'title' => 'Comentario',
-		'page callback' => 'webservicesphp_comentario',
+	$items['webservicesphp/agregacomentario'] = array(
+	'title' => 'Comentarios Agregados',
+		'page callback' => 'webservicesphp_agregacomentario',
+		'access callback' => TRUE,
+	);
+
+	$items['webservicesphp/vistacomentario'] = array(
+	'title' => 'Vista Comentarios',
+		'page callback' => 'webservicesphp_vistacomentario',
 		'access callback' => TRUE,
 	);
 
 	return $items;
 }
 
-
-//Muestra toda la información del primer nodo creado
-function webservicesphp_printnode() {
-	$nid = 1;
-	$node = node_load($nid);
-	print drupal_render(node_view(node_load($nid)));
-}
 
 //Muestra un historial de todos los artículos publicados
 function webservicesphp_list() {
@@ -52,60 +39,16 @@ function webservicesphp_list() {
 		->condition('status', 1) //publicados
 		->orderBy('created', 'DESC'); //Mas reciente primero
 	$result = $query->execute();
-//	echo '<h2> Directorio de publicaciones </h2>';
-	echo '<table width="99%" border="0">';
 	while($registro = $result->fetchAssoc()) {
-		echo '<tr>'; //fila
-		echo '<td>';
-		print_r($registro['title']);
-		echo '</td><td>';
-		print_r(format_date($registro['created'],'custom','j M Y'));
-		echo '</td>';
-		echo '</tr>'; //fila
+		$date=format_date($registro['created'],'custom','j M Y');
+		$array[$registro['title']] = $date;
 	}
-	echo '</table>';
+	echo json_encode($array);
 }
 
-//Obtine la información necesaria para la Vista de Contenidos
-function webservicesphp_vistaContenidos() {
-	$query = db_select('node', 'n');
-	$query->join('field_data_body', 'f', 'n.nid=f.entity_id');
-	$query->join('file_managed', 'm', 'n.nid=m.fid');
-	$query->fields('n', array('nid','title','created'))
-		->fields('f', array('body_value'))
-		->fields('m', array('filename'))
-		->condition('n.status', 1) //publicados
-		->orderBy('n.created', 'ASC')
-		->addTag('node_access'); 
-
-	$result = $query->execute();
-	echo '<h2> Directorio de publicaciones </h2>';
-	echo '<div class="Table">';
-	while($registro = $result->fetchAssoc()) {
-		echo '<div class="Row">'; //fila
-		echo '<p>';
-		print_r(format_date($registro['created'],'custom','j M Y'));
-		echo '<br>';
-		print_r($registro['title']);
-		echo '<br>';
-		print_r($registro['body_value']);
-		echo '<br>';
-		$imagepath = "/var/www/drupalsite/sites/default/files/styles/large/public/field/image/".$registro['filename'];
-		$picstring = base64_encode(file_get_contents($imagepath));
-		$src = 'data: '.mime_content_type($imagepath).';base64,'.$picstring;
-		echo '<img src="',$src,'">';
-		echo '</p>';
-		echo '</div>'; //fila
-	}
-	echo '</div>';
-}
 
 //Muestra un nodo
-//http://localhost/drupalsite/?q=node/10
 function webservicesphp_vistanodo() {
-//	echo '<form action="http://localhost/drupalsite/?q=webservicesphp/vistanodo&nid=$nid" method="post">';
-//	echo '<p> Nodo:&nbsp;&nbsp;&nbsp; <input maxlength="5" name="nodo" size="10" type="text" /> </p>';
-//	echo '<input  name ="ver" value="Ver" type="submit" /></p>';
 	if(isset($_POST['nid']))       $nid     = $_POST['nid'];
 
 	$query = db_select('node', 'n');
@@ -115,39 +58,69 @@ function webservicesphp_vistanodo() {
 		->fields('f', array('body_value'))
 		->fields('m', array('filename'))
 		->condition('n.nid', $nid)
-		->condition('n.status', 1) //publicados
+		->condition('n.status', 1) //articulos publicados
 		->orderBy('n.created', 'ASC')
 		->addTag('node_access'); 
-	
 	$result = $query->execute()->fetchAssoc();
-	header('Content-Type: application/json');
-//	while($registro = $result->fetchAssoc()) {
-//		if ($registro['nid']==$nid) {
-//		print $registro['nid'];
-//		print_r(format_date($registro['created'],'custom','j M Y'));
-//		print_r($registro['title']);
-//		print_r($registro['body_value']);
-//		$imagepath = "/var/www/drupalsite/sites/default/files/styles/large/public/field/image/".$registro['filename'];
-//		$picstring = base64_encode(file_get_contents($imagepath));
-//		$src = 'data: '.mime_content_type($imagepath).';base64,'.$picstring;
-//		echo '<img src="',$src,'">';
-//		}
+
+//	//Comentarios
+//	$queryc = db_select('comment', 'c');
+//	$queryc->join('field_data_comment_body', 'b', 'c.cid=b.entity_id');
+//	$queryc->fields('c', array('cid','subject','created','name'))
+//		->fields('b', array('comment_body_value'))
+//		->condition('nid', $nid);
+//	$resultc = $queryc->execute()->fetchAssoc();
+//	$comm = array();
+//	foreach ($resultc as $key => $list) {
+//		$comm[]
 //	}
+
+	header('Content-Type: application/json');
+	
 	$imagepath = "/var/www/drupalsite/sites/default/files/styles/large/public/field/image/".$result['filename'];
 	$picstring = base64_encode(file_get_contents($imagepath));
 	$src = 'data: '.mime_content_type($imagepath).';base64,'.$picstring;
+//	echo '<img src="',$src,'">';
 
 	$values = array(
 		'nid' => $result['nid'],
 		'date' => format_date($result['created'],'custom','j M Y'),
 		'title' => $result['title'],
 		'body_value' => $result['body_value'],
-		'image' => $picstring
+//		'image' => $picstring
+		'comment' => $resultc
 	);
 	echo json_encode($values);
 }
 
-function webservicesphp_comentario() {
+function webservicesphp_vistacomentario() {
+	if(isset($_POST['nid']))       $nid     = $_POST['nid'];
+
+	$queryc = db_select('comment', 'c');
+	$queryc->join('field_data_comment_body', 'b', 'c.cid=b.entity_id');
+	$queryc->fields('c', array('cid','subject','created','name'))
+		->fields('b', array('comment_body_value'))
+		->condition('nid', $nid);
+	$resultc = $queryc->execute();
+	header('Content-Type: application/json');
+	$comm = array();
+	while ($registro = $resultc->fetchAssoc()) {
+		$subject = $registro['subject'];
+		$user = $registro['name'];
+		$date = format_date($registro['created'],'custom','j M Y');
+		$content = $registro['comment_body_value'];
+		$comm[$registro['cid']] =  array(
+						'subject' => $subject,
+						'date' => $date,
+						'user' => $user,
+						'content' => $content
+					);
+	}
+
+	echo json_encode($comm);
+}
+
+function webservicesphp_agregacomentario() {
 	$com     = $_POST['comment'];
 	$nid     = $_POST['nid'];
 	$comment = new stdClass();
