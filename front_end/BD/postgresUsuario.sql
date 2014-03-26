@@ -1,5 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*Alvarez Fernández Oscar*/
+=======
+/* Alvarez Fernandez Oscar
+Barajas Nieto Victor Hugo */
+
+>>>>>>> e47214b9e03ed45ac970fa1f6abb079f6e018691
 =======
 /* Alvarez Fernandez Oscar
 Barajas Nieto Victor Hugo */
