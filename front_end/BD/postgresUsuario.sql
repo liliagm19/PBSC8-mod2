@@ -1,3 +1,7 @@
+/* Alvarez Fernandez Oscar
+Barajas Nieto Victor Hugo */
+
+
 drop database if exists usuariobd;
 drop user if exists lider;
 
@@ -23,9 +27,9 @@ PRIMARY KEY(paginas_id));
 
 CREATE TABLE usuarios (
   usuarios_id SERIAL  NOT NULL ,
-  tipos_tipo_id INTEGER   NOT NULL ,
+  tipos_tipo_id BOOL   NOT NULL ,
   nombre VARCHAR(100)    ,
-  pass VARCHAR(100)      ,
+  pass VARCHAR(32)      ,
 PRIMARY KEY(usuarios_id),
   FOREIGN KEY(tipos_tipo_id)
     REFERENCES tipos(tipo_id));
