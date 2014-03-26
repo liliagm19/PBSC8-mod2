@@ -1,3 +1,5 @@
+/*Alvarez Fernández Oscar*/
+
 drop database if exists usuariobd;
 drop user if exists lider;
 
