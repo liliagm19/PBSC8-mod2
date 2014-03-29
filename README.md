@@ -14,3 +14,5 @@ Victor Hugo Barajas Nieto: Autenticación con OAUTH, GeoIP, Cifrado de conexión
 
 
 http://drupalsite.cloudapp.net/drupalsite/
+
+http://frontendmod02.cloudapp.net
