@@ -2,7 +2,7 @@
 
 /*VISTA*/
 /*VISTA DEL PORTAL*/
-/*Realizado: Oscar Alvarez Fernadez y Romero Velazquez Diana */
+/*Realizado: Oscar Alvarez Fernadez, Romero Velazquez Diana y Victor Hugo Barajas */
 
 include_once("controlador_index.php");
 	$control = new controlador_index;
@@ -15,7 +15,7 @@ include_once("controlador_index.php");
 	<title>MI PORTAL</title> 
 	<link rel="stylesheet" type="text/css" href="./CSS/styleVI.css" />
 </head>
-<body>
+<body id= "fondo">
 		<h1>Lista de tareas</h1>
 		<ul id="lista">
 			<?php 

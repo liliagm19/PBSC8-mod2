@@ -2,7 +2,7 @@
 
 /*VISTA*/
 /*Agregar usuario*/
-/*Realizado:Oscar Alvarez Fernadez y Romero Velazquez Diana */
+/*Realizado:Oscar Alvarez Fernadez, Romero Velazquez Diana Y Victor Hugo Barajas */
 
 if($_POST['nombre']!="" && $_POST['pass']!=""){
 	include_once("conectar.php");
@@ -15,7 +15,8 @@ if($_POST['nombre']!="" && $_POST['pass']!=""){
 <html>
 <head>
 	<title>Nuevo Usuario</title> 
-</head>
+
+<link rel="stylesheet" type="text/css" href="./CSS/style.css" /> </head>
 <body>
 <h3>Datos de Nuevo Usuario. Agregar</h3>");
 	<form action='#' method='post'>
