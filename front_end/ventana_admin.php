@@ -5,7 +5,7 @@
 /*Realizado: Oscar Alvarez Fernadez, Romero Velazquez Diana y Victor Hugo Barajas*/
 
 	session_start();
-	if(!empty($_SESSION['nombre'])){
+	if(empty($_SESSION['nombre'])){
 		session_destroy();
 		header('Location: ventana_inicio.php');
 		

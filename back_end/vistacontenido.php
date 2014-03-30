@@ -1,8 +1,8 @@
 <?php
 /*
- *	Lilia Elena González Medina
+ *	Lilia Elena Gonzalez Medina
  */
-if (!filter_input(INPUT_GET, 'nid', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH )) {
+//if (!filter_input(INPUT_GET, 'nid', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH )) {
 $nid = $_GET['nid']; //id del articulo
 $str= "nid=".$nid;
 $url = 'vistanodo&nid=$nid';
@@ -51,16 +51,19 @@ $urlcomm = 'vistacomentario&nid=$nid';
  }
 echo '</table>';
 echo '</div>';
+//}
 ?>
 
-<!-- Sección de envío de comentarios -->
+<!-- Seccion de envio de comentarios -->
 <form action="vistacontenido.php" method="post">
         <p> Comentario:&nbsp;&nbsp;&nbsp; <textarea rows="4" cols="50" name="comentario"></textarea></p>
         <p> <input value="Guardar" type="submit"></p>
 <?php
+$nid = $_GET['nid']; //id del articulo
+$str= "nid=".$nid;
 $sustituye = "";
 if(isset($_POST['comentario'])) {
-$regexp = "/^([A-Za-z0-9áéíóúÁÉÍÓÚñü,;.!¡?¿\s])*$/";
+$regexp = "/^([A-Za-z0-9,;.!?\s])*$/";
 $prohibe = "/select|insert|delete|update|like|script|<|>|\*|--|=|'|from|where/";
  $comment = $_POST['comentario'];
  $comment = preg_replace($prohibe, $sustituye, $comment);
@@ -75,9 +78,8 @@ $prohibe = "/select|insert|delete|update|like|script|<|>|\*|--|=|'|from|where/";
  }
  else
  {
-   print("Tu comentario contiene caracteres inválidos.");
+   print("Tu comentario contiene caracteres invalidos.");
  }
 }
-
 ?>
 </form>

@@ -8,12 +8,12 @@
 class conectar{
 
 function conexion(){
-	$cnx = pg_connect("host=localhost port=5432 dbname=usuariobd user=lider password=hola") or die ("Error de conexion. ". pg_last_error());
+	$cnx = pg_connect("host=138.91.119.60 port=5432 dbname=usuariobd user=lider password=hola") or die ("Error de conexion. ". pg_last_error());
 	return $cnx;
 
 }
 function desconectar(){
-	pg_close("host=localhost port=5432 dbname=usuariobd user=lider password=hola");
+	pg_close("host=138.91.119.60 port=5432 dbname=usuariobd user=lider password=hola");
 }
 
 function usuario($link, $usuario){
