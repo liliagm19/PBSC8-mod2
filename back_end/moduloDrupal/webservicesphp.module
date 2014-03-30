@@ -1,6 +1,6 @@
 <?php
 /**
- *	Lilia Elena Gonzalez Medina
+ * Funcion de nuestro hook_menu()
  */
 function webservicesphp_menu() {
 
@@ -60,7 +60,7 @@ function webservicesphp_list() {
 //Muestra un nodo
 function webservicesphp_vistanodo() {
 	if(isset($_POST['nid'])){       $nid     = (int)$_POST['nid'];
-	if(is_int($nid) && $nid!=0){
+//	if(is_int($nid) && $nid!=0){
 	$query = db_select('node', 'n');
 	$query->join('field_data_body', 'f', 'n.nid=f.entity_id');
 	$query->join('file_managed', 'm', 'n.nid=m.fid');
@@ -88,13 +88,12 @@ function webservicesphp_vistanodo() {
 		'comment' => $resultc
 	);
 	echo json_encode($values);
-	}
+//	}
 	}
 }
 
 function webservicesphp_vistacomentario() {
 	if(isset($_POST['nid'])){       $nid     = $_POST['nid'];
-	if(is_int($nid) && $nid!=0){
 	
 	$queryc = db_select('comment', 'c');
 	$queryc->join('field_data_comment_body', 'b', 'c.cid=b.entity_id');
@@ -118,7 +117,6 @@ function webservicesphp_vistacomentario() {
 	}
 
 	echo json_encode($comm);
-	}
 	}
 }
 
