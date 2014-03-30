@@ -137,8 +137,7 @@ void autentica(char* user, char* password, char* user_salida,char* pass_salida) 
     if (PQstatus(conn) == CONNECTION_BAD) { 
         user_salida = "-1";
         pass_salida = "-1";
-        exit(0);
-
+        return;
     }
 
     res = PQexec(conn,consulta);
@@ -147,7 +146,7 @@ void autentica(char* user, char* password, char* user_salida,char* pass_salida) 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
          user_salida = "-1";
          pass_salida = "-1";       
-        
+         return;
     }
 
 
@@ -159,8 +158,7 @@ void autentica(char* user, char* password, char* user_salida,char* pass_salida) 
     if (rec_count == 0){
         user_salida = token(user);
         pass_salida = token(password);
-        
-
+        return;
     }
 
     for (row=0; row<rec_count; row++) {
@@ -234,9 +232,6 @@ void main(void){
     char* input2 = (char*)malloc(strlen(input)*sizeof(char));
     strcpy(input2,input);
 
-    printf("Content-type: text/html; charset=utf-8\n\n");
-
-
     //Todo este proceso a continuación es para descomponer la larga cadena del login en tokens para obtener el usuario y la contraseña.
     string_tok = strtok(input,"&");
     string_tok_1 = (char*)malloc(strlen(string_tok)*sizeof(char));
@@ -261,8 +256,14 @@ void main(void){
     sprintf(pass,"%s",mini_tok_2);
     //Aquí termina el proceso de la obtención del usuario y la contraseña.
 
-    autentica(user,pass,user_salida,pass_salida);
 
+    autentica(user,pass,user_salida,pass_salida);
+      
+
+    printf("Content-type: text/html; charset=utf-8\n\n");
+
+
+    
     /*
      A continuación sanitizamos la entrada que se pase del login, para ello tomamos en bruto toda la cadena user=X&password=Y y verificamos que en los valores de estas
      variables no estén introducidas sentencias maliciosas para repercutir en la bd.
@@ -295,7 +296,6 @@ void main(void){
 
     //La información no hace match con las expresiones regulares, significa que se puede seguir adelante.
    if(reti == REG_NOMATCH){  
-      autentica(user,pass,user_salida,pass_salida);
       printf("<HTML>\n");
       //printf("%s",input2);
       printf("<meta http-equiv=\"Refresh\" content=\"1; url=controlador_portal.php?user=%s&token=%s\">\n",user_salida,pass_salida);

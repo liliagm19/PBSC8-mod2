@@ -25,7 +25,7 @@
 	<title>MI PORTAL</title> 
 	<link rel="stylesheet" type="text/css" href="./CSS/styleVI.css" />
 </head>
-<body id= "fondo">
+<body>
 	
 <h1>MI PORTAL</h1>
 		<ul id="lista">

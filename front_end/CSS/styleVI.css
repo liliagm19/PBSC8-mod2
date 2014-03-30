@@ -1,0 +1,31 @@
+/*Realizado: Victor Hugo Barajas */
+
+body{
+        font: bold 27px Cambria, Serif;
+        text-align: center;
+        background-color: #1E90FF;
+        }
+
+#ListaT{
+        color: white;
+
+        }
+
+
+ul#lista { 
+    float: left; 
+    list-style: none; 
+    margin-left: 0; 
+    width: 672px;
+}
+ul#lista li { 
+    border: 1px solid #dedede; 
+    float: left; 
+    margin: 0 10px 10px 0; 
+    padding: 5px;
+    width: 202px;
+}
+
+ul#lista a { display: block; width: 100%; }
+ul#lista a:hover { text-decoration: none; }
+ul#lista img { border: 1px solid #dedede; display: block; padding-bottom: 5px; }
