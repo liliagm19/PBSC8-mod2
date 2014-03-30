@@ -1,6 +1,6 @@
 <?php
 /**
- * Funcion de nuestro hook_menu()
+ *	Lilia Elena Gonzalez Medina
  */
 function webservicesphp_menu() {
 
@@ -32,25 +32,35 @@ function webservicesphp_menu() {
 }
 
 
-//Muestra un historial de todos los artículos publicados
+//Muestra un historial de todos los articulos publicadoss por tema
 function webservicesphp_list() {
-	$query = db_select('node', 'n')
-		->fields('n', array('title','created'))
+	if(isset($_POST['tag']))       $tag     = $_POST['tag'];
+
+	$query = db_select('node', 'n');
+	$query->join('taxonomy_index', 'ti', 'n.nid=ti.nid');
+	$query->join('taxonomy_term_data', 't', 'ti.tid=t.tid');
+	$query->fields('n', array('nid','title','created'))
 		->condition('status', 1) //publicados
+		->condition('t.name', $tag) //tags de los articulos
 		->orderBy('created', 'DESC'); //Mas reciente primero
 	$result = $query->execute();
+	$articulos = array();
 	while($registro = $result->fetchAssoc()) {
 		$date=format_date($registro['created'],'custom','j M Y');
-		$array[$registro['title']] = $date;
+		$title=$registro['title'];
+		$articulos[$registro['nid']] = array(
+			'title' => $title,
+			'date' => $date
+		);
 	}
-	echo json_encode($array);
+	echo json_encode($articulos);
 }
 
 
 //Muestra un nodo
 function webservicesphp_vistanodo() {
-	if(isset($_POST['nid']))       $nid     = $_POST['nid'];
-
+	if(isset($_POST['nid'])){       $nid     = (int)$_POST['nid'];
+	if(is_int($nid) && $nid!=0){
 	$query = db_select('node', 'n');
 	$query->join('field_data_body', 'f', 'n.nid=f.entity_id');
 	$query->join('file_managed', 'm', 'n.nid=m.fid');
@@ -63,39 +73,29 @@ function webservicesphp_vistanodo() {
 		->addTag('node_access'); 
 	$result = $query->execute()->fetchAssoc();
 
-//	//Comentarios
-//	$queryc = db_select('comment', 'c');
-//	$queryc->join('field_data_comment_body', 'b', 'c.cid=b.entity_id');
-//	$queryc->fields('c', array('cid','subject','created','name'))
-//		->fields('b', array('comment_body_value'))
-//		->condition('nid', $nid);
-//	$resultc = $queryc->execute()->fetchAssoc();
-//	$comm = array();
-//	foreach ($resultc as $key => $list) {
-//		$comm[]
-//	}
-
 	header('Content-Type: application/json');
 	
-	$imagepath = "/var/www/drupalsite/sites/default/files/styles/large/public/field/image/".$result['filename'];
+	$imagepath = "/var/www/drupalsite/sites/default/files/field/image/".$result['filename'];
 	$picstring = base64_encode(file_get_contents($imagepath));
 	$src = 'data: '.mime_content_type($imagepath).';base64,'.$picstring;
-//	echo '<img src="',$src,'">';
 
 	$values = array(
 		'nid' => $result['nid'],
 		'date' => format_date($result['created'],'custom','j M Y'),
 		'title' => $result['title'],
 		'body_value' => $result['body_value'],
-//		'image' => $picstring
+		'image' => $picstring,
 		'comment' => $resultc
 	);
 	echo json_encode($values);
+	}
+	}
 }
 
 function webservicesphp_vistacomentario() {
-	if(isset($_POST['nid']))       $nid     = $_POST['nid'];
-
+	if(isset($_POST['nid'])){       $nid     = $_POST['nid'];
+	if(is_int($nid) && $nid!=0){
+	
 	$queryc = db_select('comment', 'c');
 	$queryc->join('field_data_comment_body', 'b', 'c.cid=b.entity_id');
 	$queryc->fields('c', array('cid','subject','created','name'))
@@ -118,6 +118,8 @@ function webservicesphp_vistacomentario() {
 	}
 
 	echo json_encode($comm);
+	}
+	}
 }
 
 function webservicesphp_agregacomentario() {

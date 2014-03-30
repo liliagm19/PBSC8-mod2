@@ -1,19 +1,26 @@
 <?php
 /*
- *	Lilia Elena González Medina
+ *	Lilia Elena Gonzalez Medina
  */
+if (!filter_input(INPUT_GET, 'tag', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH ))
+{
+  echo "invalido";
+} else {
+$tag = $_GET['tag'];
+$str= "tag=".$tag;
+$url = 'lista&tag=$tag';
 
-$url = 'http://192.168.0.10:80/drupalsite/?q=webservicesphp/lista';
+ include_once("conexiondrupal.php");
+ $dataobj = new conexiondrupal;
+ $data = $dataobj->obtendatos($url,$str);
 
- $ch=curl_init();
- curl_setopt($ch, CURLOPT_URL, $url);
- curl_setopt($ch, CURLOPT_POST, 0);
- curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
- $data=curl_exec($ch);
- curl_close($ch);
+ echo '<h2>'.$tag.'</h2>';
 
  $values = json_decode($data);
- foreach($values as $title => $date) {
-   print_r($title." ".$date."<br />");
+ foreach($values as $nid => $lista) {
+   $titulo = $lista->{'title'};
+   $fecha = $lista->{'date'};
+   echo '<a href=vistacontenido.php?nid='.$nid.'>'.$titulo." ".$fecha.'</a><br>';
  }
+}
 ?>

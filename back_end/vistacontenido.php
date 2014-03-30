@@ -2,49 +2,33 @@
 /*
  *	Lilia Elena González Medina
  */
-$nid = urlencode('2'); //id del articulo
-
+if (!filter_input(INPUT_GET, 'nid', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH )) {
+$nid = $_GET['nid']; //id del articulo
 $str= "nid=".$nid;
-$url = 'http://192.168.0.10:80/drupalsite/?q=webservicesphp/vistanodo&nid=$nid';
+$url = 'vistanodo&nid=$nid';
 
- $ch=curl_init();
- curl_setopt($ch, CURLOPT_URL, $url);
- curl_setopt($ch, CURLOPT_POST, 1);
- curl_setopt($ch, CURLOPT_POSTFIELDS, $str);
- curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
- $data=curl_exec($ch);
- curl_close($ch);
-
-// $outputfile = getcwd().'/'.$nid.'.jpg';
-// echo $outputfile;
-// function base64_to_jpeg($imagen_base64, $outputfile) {
-//    $imgfp = fopen( $outputfile, "wb");
-//    fwrite($imgfp, base64_decode($imagen_base64));
-//    fclose($imgfp);
-//    return($outputfile);
-// }
+ include_once("conexiondrupal.php");
+ $dataobj = new conexiondrupal;
+ $data = $dataobj->obtendatos($url,$str);
 
  $values = json_decode($data);
  $fecha = $values->{'date'};
  $titulo = $values->{'title'};
  $contenido = $values->{'body_value'};
-// $imagen_base64 = $values->{'image'};
+ $imagen_base64 = $values->{'image'};
  print_r($titulo); echo '<br />';
  print_r($fecha); echo '<br /><br />';
  print_r($contenido); echo '<br /><br />';
+ echo '<img src="data:image/png;base64,'.$imagen_base64.'"/>';
 
 //--------------Comentarios------------------
 echo '<div>';
 echo '<h3>Comentarios</h3>';
-$urlcomm = 'http://192.168.0.10:80/drupalsite/?q=webservicesphp/vistacomentario&nid=$nid';
+$urlcomm = 'vistacomentario&nid=$nid';
 
- $ch=curl_init();
- curl_setopt($ch, CURLOPT_URL, $urlcomm);
- curl_setopt($ch, CURLOPT_POST, 1);
- curl_setopt($ch, CURLOPT_POSTFIELDS, $str);
- curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
- $data=curl_exec($ch);
- curl_close($ch);
+ include_once("conexiondrupal.php");
+ $dataobj = new conexiondrupal;
+ $data = $dataobj->obtendatos($urlcomm,$str);
 
  $values = json_decode($data);
  echo '<table style="width:600px">';
@@ -82,14 +66,10 @@ $prohibe = "/select|insert|delete|update|like|script|<|>|\*|--|=|'|from|where/";
  $comment = preg_replace($prohibe, $sustituye, $comment);
  if(preg_match($regexp, $comment)) {
   $str= "nid=".$nid."&comment=".$comment;
-  $url = 'http://192.168.0.10:80/drupalsite/?q=webservicesphp/agregacomentario&nid=$nid&comment=$comment';
-   $chc=curl_init();
-   curl_setopt($chc, CURLOPT_URL, $url);
-   curl_setopt($chc, CURLOPT_POST, 1);
-   curl_setopt($chc, CURLOPT_POSTFIELDS, $str);
-   curl_setopt($chc, CURLOPT_RETURNTRANSFER, true);
-   $value=curl_exec($chc);
-   curl_close($chc);
+  $url = 'agregacomentario&nid=$nid&comment=$comment';
+  include_once("conexiondrupal.php");
+  $dataobj = new conexiondrupal;
+  $data = $dataobj->obtendatos($url,$str);
    $comment="";
    print_r($value);
  }
@@ -98,5 +78,6 @@ $prohibe = "/select|insert|delete|update|like|script|<|>|\*|--|=|'|from|where/";
    print("Tu comentario contiene caracteres inválidos.");
  }
 }
+
 ?>
 </form>

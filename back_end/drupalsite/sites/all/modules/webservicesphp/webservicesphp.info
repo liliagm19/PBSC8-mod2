@@ -1,4 +1,0 @@
-name = webservicesphp
-description = "Modulo para transmitir el contenido de drupal al front end"
-package = WebServicePHP
-core = 7.x
