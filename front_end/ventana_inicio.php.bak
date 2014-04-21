@@ -15,7 +15,7 @@ include_once("controlador_index.php");
 	<title>MI PORTAL</title> 
 	<link rel="stylesheet" type="text/css" href="./CSS/styleVI.css" />
 </head>
-<body id= "fondo">
+<body>
 		<h1>Lista de tareas</h1>
 		<ul id="lista">
 			<?php 

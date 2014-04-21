@@ -2,11 +2,10 @@
 
 /*VISTA*/
 /*Vista del Portal de administrador*/
-/*Realizado: Oscar Alvarez Fernadez y Romero Velazquez Diana */
-/*Estilo: Victor Hugo Barajas*/
+/*Realizado: Oscar Alvarez Fernadez, Romero Velazquez Diana y Victor Hugo Barajas*/
 
 	session_start();
-	if(!empty($_SESSION['nombre'])){
+	if(empty($_SESSION['nombre'])){
 		session_destroy();
 		header('Location: ventana_inicio.php');
 		
@@ -26,7 +25,7 @@
 	<title>MI PORTAL</title> 
 	<link rel="stylesheet" type="text/css" href="./CSS/styleVI.css" />
 </head>
-<body>
+<body id= "fondo">
 	
 <h1>MI PORTAL</h1>
 		<ul id="lista">

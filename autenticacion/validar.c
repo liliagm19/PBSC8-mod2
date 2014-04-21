@@ -181,17 +181,29 @@ void autentica(char* user, char* password, char* user_salida,char* pass_salida) 
  
     //Para el caso en que no se pueda conectar a la base se envÃ­a un -1 para ambos valores, con Ã©sto el controlador de php asume que se trata de un error en la bd.
     if (PQstatus(conn) == CONNECTION_BAD) { 
+<<<<<<< HEAD
         strcpy(user_salida,"-1");
         strcpy(pass_salida,"-1");
         return;
     } 
+=======
+        user_salida = "-1";
+        pass_salida = "-1";
+        return;
+    }
+>>>>>>> eeca8dd5a35e5b21dcbd0f6fd8b4c434ced01ccb
 
     res = PQexec(conn,consulta);
 
     //Para el caso en que estÃ© mal la consulta se envÃ­a un -1 para ambos valores, con Ã©sto el controlador de php asume que se trata de un error en la bd.
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+<<<<<<< HEAD
          strcpy(user_salida,"-1");
          strcpy(pass_salida,"-1");       
+=======
+         user_salida = "-1";
+         pass_salida = "-1";       
+>>>>>>> eeca8dd5a35e5b21dcbd0f6fd8b4c434ced01ccb
          return;
     }
 
@@ -201,10 +213,15 @@ void autentica(char* user, char* password, char* user_salida,char* pass_salida) 
     //Para el caso en que no exista el usuario Ã³ la contraseÃ±a se envÃ­an las credenciales al controlador de php pero no se envÃ­an al archivo, asÃ­ se garantiza que no
     //se aceptarÃ¡ la sesiÃ³n.
     if (rec_count == 0){
+<<<<<<< HEAD
         strcpy(user_salida,token(user));
         strcpy(pass_salida,token(password));
         strcpy(user_salida,token(user));
         strcpy(pass_salida,token(password));
+=======
+        user_salida = token(user);
+        pass_salida = token(password);
+>>>>>>> eeca8dd5a35e5b21dcbd0f6fd8b4c434ced01ccb
         return;
     }
 
@@ -271,6 +288,7 @@ int  main(void){
     //Se leen los datos en bruto desde el formulario.
     fscanf(stdin,"%s",input);
 
+<<<<<<< HEAD
     //Aquí lo que sucede es que en PHP los caracteres especiales (comas, signos de puntuacion, de interrogación, etc.) se 
     //envían al CGI en formato hexadecimal, entonces esta función "regresa" los valores al formato original (sólo texto).
     char* input_decode = url_decode(input);
@@ -280,6 +298,13 @@ int  main(void){
 
     //Todo este proceso a continuaciÃ³n es para descomponer la larga cadena del login en tokens para obtener el usuario y la contraseÃ±a.
     string_tok = strtok(input_decode,"&");
+=======
+    char* input2 = (char*)malloc(strlen(input)*sizeof(char));
+    strcpy(input2,input);
+
+    //Todo este proceso a continuación es para descomponer la larga cadena del login en tokens para obtener el usuario y la contraseña.
+    string_tok = strtok(input,"&");
+>>>>>>> eeca8dd5a35e5b21dcbd0f6fd8b4c434ced01ccb
     string_tok_1 = (char*)malloc(strlen(string_tok)*sizeof(char));
     string_tok_2 = (char*)malloc(strlen(string_tok)*sizeof(char));
 
@@ -310,6 +335,7 @@ int  main(void){
     mini_tok_2 = strtok(NULL,"=");
 
 
+<<<<<<< HEAD
     //En caso de que el campo pass venga vacío se asigna un -1.
     if (mini_tok_2==NULL)
        sprintf(pass,"%s","-1");
@@ -320,9 +346,19 @@ int  main(void){
     //AquÃ­ termina el proceso de la obtenciÃ³n del usuario y la contraseÃ±a.
 
     //Se autentica el usuario.
+=======
+>>>>>>> eeca8dd5a35e5b21dcbd0f6fd8b4c434ced01ccb
     autentica(user,pass,user_salida,pass_salida);
+      
 
     printf("Content-type: text/html; charset=utf-8\n\n");
+
+
+<<<<<<< HEAD
+    printf("Content-type: text/html; charset=utf-8\n\n");
+=======
+    
+>>>>>>> eeca8dd5a35e5b21dcbd0f6fd8b4c434ced01ccb
     /*
      A continuaciÃ³n sanitizamos la entrada que se pase del login, para ello tomamos en bruto toda la cadena user=X&password=Y y verificamos que en los valores de estas
      variables no estÃ©n introducidas sentencias maliciosas para repercutir en la bd.
@@ -355,9 +391,14 @@ int  main(void){
     
     }
 
+<<<<<<< HEAD
     //La informaciÃ³n no hace match con las expresiones regulares, significa que se puede seguir adelante.
    if(reti == REG_NOMATCH && strcmp(user,user_salida)==0){  
       //printf("No entró en match\n");
+=======
+    //La información no hace match con las expresiones regulares, significa que se puede seguir adelante.
+   if(reti == REG_NOMATCH){  
+>>>>>>> eeca8dd5a35e5b21dcbd0f6fd8b4c434ced01ccb
       printf("<HTML>\n");
       printf("<meta http-equiv=\"Refresh\" content=\"1; url=http://frontendmod02.cloudapp.net/sesion.php?user=%s&token=%s\">\n",user_salida,pass_salida);
       printf("</HTML>\n");
